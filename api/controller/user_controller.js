@@ -2,46 +2,70 @@ const jwt = require('jsonwebtoken');
 
 const User = require("../model/User");
 
-// exports.getAllUsers = async (req,res,next) => {
-//     let users;
-//     try{
-//         users = await User.find();
-//     }catch(err){
-//         return next(err);
-//     }
+exports.login = async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        let existingUser = await User.findOne({ email: email, password: password });
+        if (existingUser != null) {
+            const token = jwt.sign({ id: existingUser.id, }, "secret", { expiresIn: "1h" });
+            return res.status(200).json({
+                status: 200,
+                user: {
+                    id: existingUser.id,
+                    name: existingUser.name,
+                    email: existingUser.email,
+                    token: token
+                }
+            });
+        } else {
+            return res.status(200).json({
+                status: 200,
+                message: "Invalid email or password"
+            });
+        }
 
-//     if(!users){
-//         return res.status(500).json({
-//             message: "Internal Server Error"
-//         });
-//     }
-
-//     return res.status(200).json({users});
-// };
-
-exports.register = async (req,res,next) => {
-    const {name,email,password} = req.body;
-    try{
-        let user = new User({
-            name,
-            email,
-            password
-        });
-        user = await user.save();
-        const token = jwt.sign({id: user.id,}, "secret", { expiresIn: "1h" });
-        return res.status(201).json({
-            status : 201,
-            message: "Registration Successful",
-            user : {
-                id : user.id,
-                name : user.name,
-                email : user.email,
-                token : token
-            }
-        });
-    }catch(err){
+    } catch (err) {
         return res.status(500).json({
+            status: 500,
             message: "Internal Server Error"
+        });
+    }
+}
+
+exports.register = async (req, res) => {
+    const { name, email, password } = req.body;
+    try {
+        let existingUser = await User.findOne({ email: email });
+        if (existingUser != null) {
+            return res.status(200).json({
+                status: 200,
+                message: "User already exists"
+            });
+        } else {
+            let user = new User({
+                name : name,
+                email : email,
+                password : password
+            });
+            user = await user.save();
+            const token = jwt.sign({ id: user.id, }, "secret", { expiresIn: "1h" });
+            return res.status(201).json({
+                status: 201,
+                message: "Registration Successful",
+                user: {
+                    id: user.id,
+                    name: user.name,
+                    email: user.email,
+                    token: token
+                }
+            });
+        }
+
+
+    } catch (err) {
+        return res.status(500).json({
+            status: 500,
+            message: err
         });
     }
 }
