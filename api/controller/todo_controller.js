@@ -46,7 +46,7 @@ exports.addTodo = async (req, res) => {
             status: 1,
             message: "Added successfully",
             data: {
-                id: todo.id,
+                _id: todo.id,
                 title: todo.title,
                 description: todo.description,
                 dateTime: todo.dateTime,
@@ -112,7 +112,7 @@ exports.updateTodo = async (req, res) => {
                 status: 1,
                 message: "Updated successfully",
                 data: {
-                    id: todo.id,
+                    _id: todo.id,
                     title: todo.title,
                     description: todo.description,
                     dateTime: todo.dateTime,

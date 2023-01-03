@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const bodyParser = require('body-parser');
 const UserRouter = require("./api/routes/user_route");
 const TodoRouter = require("./api/routes/todo_route");
+const TokenRoute = require('./api/routes/token_route');
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use('/check',  (req, res) => {
 
 app.use('/users',UserRouter);
 app.use('/todo',TodoRouter);
+app.use('/auth', TokenRoute);
 
 
 app.use((req, res, next) => {
