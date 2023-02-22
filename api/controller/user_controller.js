@@ -7,7 +7,7 @@ exports.login = async (req, res) => {
     try {
         let existingUser = await User.findOne({ email: email, password: password });
         if (existingUser != null) {
-            const token = jwt.sign({ id: existingUser.id, }, "secret", { expiresIn: "1h" });
+            const token = jwt.sign({ id: existingUser.id, }, "secret", { expiresIn: 60 });
             return res.status(200).json({
                 statusCode: 200,
                 message: "Login Successful",

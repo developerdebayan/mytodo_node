@@ -6,7 +6,7 @@ exports.refreshToken = (req, res, next) => {
 
     const newToken = jwt.sign({
         id: decoded['id'],
-    }, "secret", { expiresIn: "1h" });
+    }, "secret", { expiresIn: 60 });
 
     res.status(200).json({ statusCode: 200, status: 1, token: newToken });
 };
